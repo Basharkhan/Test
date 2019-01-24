@@ -1,0 +1,445 @@
+<div id="todo" class="page-layout carded left-sidebar inner-scroll">
+
+    <fuse-sidebar class="sidebar" name="training-main-sidebar" position="left" lockedOpen="gt-md">
+
+        <!-- SIDEBAR CONTENT -->
+        <div class="content" fusePerfectScrollbar [@animate]="{value:'*',params:{y:'50px'}}">
+
+            <div class="p-24">
+                <button mat-raised-button (click)="newForm()"
+                        class="mat-accent add-todo-button w-100-p"
+                        aria-label="ADD EDUCATION">
+                    ADD DEGREE
+                </button>
+            </div>
+
+            <div class="nav">
+
+                <div class="nav-subheader" *ngIf="educationalInformationList !== null && educationalInformationList.length > 0">DEGREE LIST</div>
+
+                <div class="nav-item" *ngFor="let educationInformationObject of educationalInformationList">
+                    <a class="nav-link" matRipple (click)="selectedNavbar(educationInformationObject)"
+                       [ngStyle]="educationalInformation.id == educationInformationObject.id && {'background-color': '#039be5'}">
+                        <mat-icon class="nav-link-icon" [ngStyle]="{'color': 'green'}">label</mat-icon>
+                        <span>{{ educationInformationObject.degree }}</span>
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+        <!-- / SIDEBAR CONTENT -->
+
+    </fuse-sidebar>
+    <!-- CENTER -->
+    <div class="center">
+
+        <br/>
+        <div class="fuse-card"
+             style="max-width: 100%; max-height: 100%; box-shadow: -6px 0px 0px -2px rgba(193,204,212,0.59)">
+
+            <div class="tab-content p-24" fusePerfectScrollbar>
+
+                <form name="form" [formGroup]="educationInformationForm" #educationInformationFormDirective="ngForm"
+                      class="employee w-100-p" fxLayout="column"
+                      fxFlex (ngSubmit)="saveForm(educationInformationForm.value, educationInformationFormDirective)">
+
+                    <div fxFlex fxLayout="row" fxFlex="100">
+                        <mat-form-field class="w-100-p" fxFlex="{{ degreeDropDownRequired ? 50 : 100 }}">
+                            <mat-select placeholder="Level of Education" formControlName="educationLevel" (selectionChange)="educationLevelSelection($event.value)" required>
+                                <mat-option *ngFor="let educationalLevel of educationLevelWithDegreeList" [value]="educationalLevel.id">
+                                    {{ educationalLevel.type }}
+                                </mat-option>
+                            </mat-select>
+
+                            <mat-error *ngIf="educationInformationForm.get('educationLevel').hasError('required')">
+                                Education Level is required!
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field class="w-100-p" fxFlex="50" *ngIf="degreeDropDownRequired">
+                            <mat-select placeholder="Exam/Degree Title" formControlName="degree" required>
+                                <mat-option *ngFor="let degree of degreeList" [value]="degree.id">
+                                    {{ degree.type }}
+                                </mat-option>
+                            </mat-select>
+
+                            <mat-error *ngIf="educationInformationForm.get('degree').hasError('required')">
+                                Degree Title is required!
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+
+                    <div fxFlex fxLayout="row" fxFlex="100" *ngIf="degreeTitleRequired">
+                        <mat-form-field class="w-100-p" fxFlex="100">
+                            <input matInput formControlName="degreeTitle" placeholder="Degree Title" pattern="([a-zA-Z]\s*)+" minlength="1" maxlength="30"
+                                   type="text">
+                            <mat-error *ngIf="educationInformationForm.get('degreeTitle').hasError('required')">
+                                Degree Title is required!
+                            </mat-error>
+                            <mat-error *ngIf="educationInformationForm.get('degreeTitle').hasError('minlength')">
+                                Minimum 2 characters required!
+                            </mat-error>
+                            <mat-error *ngIf="educationInformationForm.get('degreeTitle').hasError('maxlength')">
+                                Maximum 30 characters Allowed!
+                            </mat-error>
+                            <mat-error *ngIf="educationInformationForm.get('degreeTitle').hasError('pattern')">
+                                Only Alphabet is allowed!
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div fxFlex fxLayout="row" fxFlex="100">
+                        <mat-form-field class="w-100-p" fxFlex="100">
+                            <input type="text" placeholder="Concentration/ Major/Group " aria-label="degreeConcentrationList" matInput formControlName="degreeConcentration" (blur)="checkIsNewDegreeConcentration()"
+                                   [matAutocomplete]="autodegreeConcentrationList" required>
+                            <mat-autocomplete #autodegreeConcentrationList="matAutocomplete" (optionSelected)="degreeConcentrationSelected($event.option.value)">
+                                <mat-option *ngFor="let degreeConcentration of degreeConcentrationList" [value]="degreeConcentration">
+                                    {{ degreeConcentration }}
+                                </mat-option>
+                            </mat-autocomplete>
+
+                            <mat-error *ngIf="educationInformationForm.get('degreeConcentration').hasError('required')">
+                                Degree Concentration is required!
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div fxFlex fxLayout="row" fxFlex="100">
+                        <mat-form-field class="w-100-p" fxFlex="100">
+                            <input type="text" placeholder="Institute Name" required matInput formControlName="educationalInstitute" [matAutocomplete]="autoeducationalInstitute" (blur)="checkIsNewInstitute()">
+                            <mat-autocomplete #autoeducationalInstitute="matAutocomplete"  (optionSelected)="instituteSelected($event.option.value)" >
+                                <mat-option *ngFor="let educationalInstitute  of filteredInstituteList" [value]="educationalInstitute">
+                                    {{ educationalInstitute }}
+                                </mat-option>
+                            </mat-autocomplete>
+
+                            <mat-error *ngIf="educationInformationForm.get('educationalInstitute').hasError('required')">
+                                Institute is required!
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+
+                    <div fxFlex fxLayout="row" fxFlex="100" *ngIf="newInstitute">
+                        <mat-form-field class="w-100-p"  fxFlex="100">
+                            <span>Foreign Institute*</span> &nbsp;
+                            <input matInput style="display: none">
+                            <mat-radio-group matInput formControlName="foreignEducationalInstitute">
+                                <mat-radio-button value="true" [checked]="foreignEducationalInstitute == true"> YES </mat-radio-button> &nbsp;
+                                <mat-radio-button value="false" [checked]="foreignEducationalInstitute == false"> NO </mat-radio-button> &nbsp;
+                            </mat-radio-group>
+                        </mat-form-field>
+                    </div>
+
+                    <div fxFlex fxLayout="row" fxFlex="100" *ngIf="newInstitute">
+                        <mat-form-field class="w-50-p" fxFlex="50">
+                            <input matInput placeholder="Institute District" aria-label="District"
+                                   [matAutocomplete]="districtAutoComplete" formControlName="educationalInstituteDistrict"
+                                   required>
+                            <mat-autocomplete #districtAutoComplete="matAutocomplete">
+                                <mat-option *ngFor="let district of districtFilterList"
+                                            [value]="district">
+                                    <span>{{ district }}</span>
+                                </mat-option>
+                            </mat-autocomplete>
+                            <mat-error *ngIf="educationInformationForm.get('educationalInstituteDistrict').hasError('required')">
+                                District Name is required!
+                            </mat-error>
+                            <mat-error *ngIf="educationInformationForm.get('educationalInstituteDistrict').hasError('pattern')">
+                                Only Alphabet is allowed!
+                            </mat-error>
+                        </mat-form-field>
+
+
+                        <mat-form-field class="w-50-p" fxFlex="50">
+                            <input matInput placeholder="Institute Country" aria-label="Country"
+                                   [matAutocomplete]="countryAutoComplete" formControlName="educationalInstituteCountryName"
+                                   (focusout)="countryAutoCompletePanelClosed()"
+                                   required>
+                            <mat-autocomplete #countryAutoComplete="matAutocomplete">
+                                <mat-option *ngFor="let country of countryList"
+                                            [value]="country.name">
+                                    <span>{{ country.name }}</span>
+                                </mat-option>
+                            </mat-autocomplete>
+                            <mat-error *ngIf="educationInformationForm.get('educationalInstituteCountryName').hasError('required')">
+                                Country is required!
+                            </mat-error>
+                            <mat-error *ngIf="educationInformationForm.get('educationalInstituteCountryName').hasError('pattern')">
+                                Only Alphabet is allowed!
+                            </mat-error>
+                        </mat-form-field>
+
+                    </div>
+
+                    <div fxFlex fxLayout="row" fxFlex="100">
+                        <mat-form-field class="w-100-p" fxFlex="100" formGroupName="degreeResult">
+                            <mat-select placeholder="Result Type" formControlName="degreeResultType" required>
+                                <mat-option value="GRADE">Grade</mat-option>
+                                <mat-option value="DIVISION">Division/Class</mat-option>
+                                <mat-option value="APPEARED">Appeared</mat-option>
+                                <mat-option value="ENROLLED">Enrolled</mat-option>
+                                <mat-option value="AWARDED">Awarded</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                    <div fxFlex fxLayout="row" fxFlex="100" *ngIf="degreeDivisionTypeRequired">
+                        <mat-form-field class="w-100-p" fxFlex="100" formGroupName="degreeResult" >
+                            <mat-select placeholder="Division" formControlName="degreeDivisionType">
+                                <mat-option value="FIRST_DIVISION">First Division</mat-option>
+                                <mat-option value="SECOND_DIVISION">Second Division</mat-option>
+                                <mat-option value="THIRD_DIVISION">Third Division</mat-option>
+                            </mat-select>
+
+                            <mat-error *ngIf="educationInformationForm.get('degreeResult.degreeDivisionType').hasError('required')">
+                                Result is required!
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div fxFlex fxLayout="row" fxFlex="100" *ngIf="marksPercentageRequired">
+                        <mat-form-field class="w-100-p" fxFlex="100" formGroupName="degreeResult">
+                            <input matInput formControlName="marksPercentage" placeholder="Marks Percentage" required pattern="^[1-9][0-9]?$|^100$" min="1"
+                                   max="100" type="number">
+
+                            <mat-error *ngIf="educationInformationForm.get('degreeResult.marksPercentage').hasError('min')">
+                                Marks Percentage is required
+                            </mat-error>
+
+                            <mat-error *ngIf="educationInformationForm.get('degreeResult.marksPercentage').hasError('min')">
+                                Atleast 1% required!
+                            </mat-error>
+                            <mat-error *ngIf="educationInformationForm.get('degreeResult.marksPercentage').hasError('max')">
+                                More than 100% not possible!
+                            </mat-error>
+                            <mat-error *ngIf="educationInformationForm.get('degreeResult.marksPercentage').hasError('pattern')">
+                                Marks Percentage is invalid!
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div fxFlex fxLayout="row" fxFlex="100" *ngIf="letterGradeRequired || cgpaRequired || scaleRequired">
+                        <mat-form-field class="w-100-p" fxFlex="25" formGroupName="degreeResult" *ngIf="letterGradeRequired">
+                            <mat-select placeholder="Letter Grade" formControlName="letterGrade" required>
+                                <mat-option value="A_PLUS">A+</mat-option>
+                                <mat-option value="A">A</mat-option>
+                                <mat-option value="A_MINUS">A-</mat-option>
+                                <mat-option value="B">B</mat-option>
+                                <mat-option value="C">C</mat-option>
+                                <mat-option value="D">D</mat-option>
+                                <mat-option value="F">F</mat-option>
+                            </mat-select>
+
+                            <mat-error *ngIf="educationInformationForm.get('degreeResult.letterGrade').hasError('required')">
+                                Letter Grade is required
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field class="w-100-p" fxFlex="25" formGroupName="degreeResult" *ngIf="cgpaRequired">
+                            <input matInput formControlName="cgpa" placeholder="GPA/CGPA" required min="2.00" step="0.01" max="5.00" type="number">
+
+                            <mat-error *ngIf="educationInformationForm.get('degreeResult.cgpa').hasError('required')">
+                                GPA/CGPA is required
+                            </mat-error>
+                            <mat-error *ngIf="educationInformationForm.get('degreeResult.cgpa').hasError('min')">
+                                At least 2.00 required!
+                            </mat-error>
+                            <mat-error *ngIf="educationInformationForm.get('degreeResult.cgpa').hasError('max')">
+                                More than 5.00 not possible!
+                            </mat-error>
+                            <mat-error *ngIf="educationInformationForm.get('degreeResult.cgpa').hasError('pattern')">
+                                Marks Percentage is invalid!
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field class="w-100-p" fxFlex="25" formGroupName="degreeResult" *ngIf="cgpaWithoutFourthSubjectRequired">
+                            <input matInput formControlName="cgpaWithoutFourthSubject" placeholder="GPA W/O 4th Subject" min="2.00" step="0.01" max="5.00" type="number">
+
+                            <mat-error *ngIf="educationInformationForm.get('degreeResult.cgpaWithoutFourthSubject').hasError('required')">
+                                GPA/CGPA is required
+                            </mat-error>
+                            <mat-error *ngIf="educationInformationForm.get('degreeResult.cgpaWithoutFourthSubject').hasError('min')">
+                                At least 2.00 required!
+                            </mat-error>
+                            <mat-error *ngIf="educationInformationForm.get('degreeResult.cgpaWithoutFourthSubject').hasError('max')">
+                                More than 5.00 not possible!
+                            </mat-error>
+                            <mat-error *ngIf="educationInformationForm.get('degreeResult.cgpaWithoutFourthSubject').hasError('pattern')">
+                                Marks Percentage is invalid!
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field class="w-100-p" fxFlex="25" formGroupName="degreeResult" *ngIf="scaleRequired">
+                            <input matInput formControlName="scale" placeholder="Scale" required min="4.00" step="1" max="5.00" type="number">
+
+                            <mat-error *ngIf="educationInformationForm.get('degreeResult.scale').hasError('required')">
+                                Scale is required
+                            </mat-error>
+                            <mat-error *ngIf="educationInformationForm.get('degreeResult.scale').hasError('min')">
+                                Atleast 4.00 required!
+                            </mat-error>
+                            <mat-error *ngIf="educationInformationForm.get('degreeResult.scale').hasError('max')">
+                                More than 5.00 not possible!
+                            </mat-error>
+                            <mat-error *ngIf="educationInformationForm.get('degreeResult.scale').hasError('pattern')">
+                                Marks Percentage is invalid!
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div fxFlex fxLayout="row" fxFlex="100" *ngIf="boardDropDownRequired">
+                        <mat-form-field class="w-100-p" fxFlex="100">
+                            <input matInput formControlName="board" placeholder="Board" required pattern="([a-zA-Z()]\s*)+" minlength="1" maxlength="30"
+                                   type="text" [matAutocomplete]="autoBoard">
+                            <mat-autocomplete #autoBoard="matAutocomplete">
+                                <mat-option *ngFor="let board  of filteredBoardList" [value]="board">
+                                    {{ board }}
+                                </mat-option>
+                            </mat-autocomplete>
+                            <mat-error *ngIf="educationInformationForm.get('board').hasError('required')">
+                                Board is required!
+                            </mat-error>
+                            <mat-error *ngIf="educationInformationForm.get('board').hasError('minlength')">
+                                Minimum 2 characters required!
+                            </mat-error>
+                            <mat-error *ngIf="educationInformationForm.get('board').hasError('maxlength')">
+                                Maximum 30 characters Allowed!
+                            </mat-error>
+                            <mat-error *ngIf="educationInformationForm.get('board').hasError('pattern')">
+                                Only Alphabet is allowed!
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div fxFlex fxLayout="row" fxFlex="100">
+                        <mat-form-field class="w-100-p" fxFlex="50" formGroupName="degreeResult">
+                            <input matInput formControlName="rollNumber" placeholder="Roll Number" required pattern="([0-9]\s*)+" minlength="1" maxlength="15"
+                                   type="text">
+                            <mat-error *ngIf="educationInformationForm.get('degreeResult.rollNumber').hasError('required')">
+                                Board is required!
+                            </mat-error>
+                            <mat-error *ngIf="educationInformationForm.get('degreeResult.rollNumber').hasError('minlength')">
+                                Minimum 2 characters required!
+                            </mat-error>
+                            <mat-error *ngIf="educationInformationForm.get('degreeResult.rollNumber').hasError('maxlength')">
+                                Maximum 30 characters Allowed!
+                            </mat-error>
+                            <mat-error *ngIf="educationInformationForm.get('degreeResult.rollNumber').hasError('pattern')">
+                                Only Alphabet is allowed!
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="w-100-p" fxFlex="50" formGroupName="degreeResult">
+                            <input matInput formControlName="registrationNumber" placeholder="Registration Number" pattern="([0-9]\s*)+" minlength="1"
+                                   maxlength="15" type="text">
+                            <mat-error *ngIf="educationInformationForm.get('degreeResult.registrationNumber').hasError('required')">
+                                Board is required!
+                            </mat-error>
+                            <mat-error *ngIf="educationInformationForm.get('degreeResult.registrationNumber').hasError('minlength')">
+                                Minimum 2 characters required!
+                            </mat-error>
+                            <mat-error *ngIf="educationInformationForm.get('degreeResult.registrationNumber').hasError('maxlength')">
+                                Maximum 30 characters Allowed!
+                            </mat-error>
+                            <mat-error *ngIf="educationInformationForm.get('degreeResult.registrationNumber').hasError('pattern')">
+                                Only Alphabet is allowed!
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div fxFlex fxLayout="row" fxFlex="100">
+                        <mat-form-field class="w-100-p" fxFlex="100">
+                            <mat-select placeholder="Year of Passing" formControlName="yearOfPassing">
+                                <mat-option *ngFor="let passingYear of passingYearList" [value]="passingYear">
+                                    {{ passingYear }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field class="w-100-p" fxFlex="50">
+                            <input matInput formControlName="duration" placeholder="Duration (Years)" required min="1" step="1" max="70" type="number">
+
+                            <mat-error *ngIf="educationInformationForm.get('yearOfPassing').hasError('required')">
+                                Duration is required
+                            </mat-error>
+
+                            <mat-error *ngIf="educationInformationForm.get('yearOfPassing').hasError('min')">
+                                Atleast 1 year required!
+                            </mat-error>
+                            <mat-error *ngIf="educationInformationForm.get('yearOfPassing').hasError('max')">
+                                More than 70 not possible!
+                            </mat-error>
+                            <mat-error *ngIf="educationInformationForm.get('yearOfPassing').hasError('pattern')">
+                                Duration is invalid!
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div fxFlex fxLayout="row" fxFlex="100">
+                        <mat-form-field class="w-100-p" fxFlex="100">
+                            <input matInput formControlName="achievement" placeholder="Achievement">
+                        </mat-form-field>
+                    </div>
+
+                    <fieldset>
+                        <legend>Certificate</legend>
+
+                        <file-upload
+                            (messageEvent)="receiveCertificateFileName($event)"
+                            [fileType]="certificateFileType"
+                            [fileExtensionType]="allowedExtensionType"
+                            [username]="username"></file-upload>
+
+                        <div class="p-24" style="text-align: center">
+                            <img *ngIf="educationalInformation.scannedCopyOfCertificate?.length > 0" style="text-align: center" src="{{ fileServerBasePath }}/EDUCATION_CERTIFICATE/{{ educationalInformation.scannedCopyOfCertificate }}" style="max-width: 200px; max-height: 200px" />
+                            <img *ngIf="educationalInformation.scannedCopyOfCertificate == null || educationalInformation.scannedCopyOfCertificate == ''" style="text-align: center" src="assets/images/blank.png" style="max-width: 200px; max-height: 200px" />
+                        </div>
+
+                    </fieldset>
+
+                    <br/>
+                    <br/>
+
+                    <fieldset>
+                        <legend>Marksheet</legend>
+
+                        <file-upload
+                            (messageEvent)="receiveMarksheetFileName($event)"
+                            [fileType]="marksheetFileType"
+                            [fileExtensionType]="allowedExtensionType"
+                            [username]="username"></file-upload>
+
+                        <div class="p-24" style="text-align: center">
+                            <img *ngIf="educationalInformation.scannedCopyOfMarkSheet?.length > 0" style="text-align: center" src="{{ fileServerBasePath }}/EDUCATION_MARKSHEET/{{ educationalInformation.scannedCopyOfMarkSheet }}" style="max-width: 200px; max-height: 200px" />
+                            <img *ngIf="educationalInformation.scannedCopyOfMarkSheet == null || educationalInformation.scannedCopyOfMarkSheet == ''" style="text-align: center" src="assets/images/blank.png" style="max-width: 200px; max-height: 200px" />
+                        </div>
+
+                    </fieldset>
+
+                    <div class="p-24">
+                        <button type="submit" mat-raised-button class="mat-accent add-todo-button w-100-p" *ngIf="pageType != 'update'"
+                                aria-label="SAVE DEGREE" [disabled]="educationInformationForm.invalid">
+                            SAVE DEGREE
+                        </button>
+
+                        <button type="submit" mat-raised-button class="mat-accent add-todo-button w-100-p" *ngIf="pageType == 'update'"
+                                aria-label="SAVE DEGREE" >
+                            SAVE DEGREE
+                        </button>
+                        <br/>
+                        <br/>
+                        <button type="button" *ngIf="educationalInformation.educationalInstitute != null && educationalInformation.educationalInstitute.name != null" mat-raised-button
+                                class="mat-warn add-todo-button w-100-p"
+                                (click)="deleteDegree(educationInformationForm.value, educationInformationFormDirective)"
+                                aria-label="DELETE DEGREE" [disabled]="educationInformationForm.invalid">
+                            DELETE DEGREE
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+        <br/>
+    </div>
+</div>

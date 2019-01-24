@@ -1,0 +1,127 @@
+[
+	{
+        "context": ["/auth"],
+		"target": "http://172.17.0.66:8083",
+		"secure": false
+	},
+
+
+    {
+        "context": ["/enum"],
+        "target": "http://172.17.0.66:8081",
+        "secure": false
+    },
+    {
+        "context": ["/language"],
+        "target": "http://172.17.0.66:8081",
+        "secure": false
+    },
+    {
+        "context": ["/skill"],
+        "target": "http://172.17.0.66:8081",
+        "secure": false
+    },
+    {
+        "context": ["/religion"],
+        "target": "http://172.17.0.66:8081",
+        "secure": false
+    },
+    {
+        "context": ["/occupation"],
+        "target": "http://172.17.0.66:8081",
+        "secure": false
+    },
+    {
+        "context": ["/degree_concentration"],
+        "target": "http://172.17.0.66:8081",
+        "secure": false
+    },
+    {
+        "context": ["/country"],
+        "target": "http://172.17.0.66:8081",
+        "secure": false
+    },
+    {
+        "context": ["/educational_institute"],
+        "target": "http://172.17.0.66:8081",
+        "secure": false
+    },
+    {
+        "context": ["/standardized_test"],
+        "target": "http://172.17.0.66:8081",
+        "secure": false
+    },
+    {
+        "context": ["/ticket"],
+        "target": "http://172.17.0.66:8081",
+        "secure": false
+    },
+    {
+        "context": ["/gsuite_user"],
+        "target": "http://172.17.0.66:8081",
+        "secure": false
+    },
+
+
+    {
+        "context": ["/office"],
+        "target": "http://172.17.0.66:8082",
+        "secure": false
+    },
+    {
+        "context": ["/rank"],
+        "target": "http://172.17.0.66:8082",
+        "secure": false
+    },
+    {
+        "context": ["/designation"],
+        "target": "http://172.17.0.66:8082",
+        "secure": false
+    },
+    {
+        "context": ["/employment_type"],
+        "target": "http://172.17.0.66:8082",
+        "secure": false
+    },
+    {
+        "context": ["/employee"],
+        "target": "http://172.17.0.66:8082",
+        "secure": false
+    },
+
+
+    {
+        "context": ["/file_server"],
+        "target": "http://172.17.0.67:8084",
+        "secure": false
+    },
+
+
+    {
+        "context": ["/student"],
+        "target": "http://172.17.0.66:8085",
+        "secure": false
+    },
+
+    {
+        "context": ["/report"],
+        "target": "http://172.17.0.66:8085",
+        "secure": false
+    },
+
+    {
+        "context": ["/degree_offered"],
+        "target": "http://172.17.0.66:8086",
+        "secure": false
+    },
+    {
+        "context": ["/academic_program"],
+        "target": "http://172.17.0.66:8086",
+        "secure": false
+    },
+    {
+        "context": ["/semester"],
+        "target": "http://172.17.0.66:8086",
+        "secure": false
+    }
+]

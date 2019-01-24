@@ -1,0 +1,82 @@
+<mat-tab-group>
+  <mat-tab label="Creat Admission Form Slip"> 
+      <mat-card>
+        <form [formGroup]="admissionFormSlip" fxLayout="column" fxFlex (ngSubmit)="saveAdmissionFormSlip()">
+          <div formGroupName="name" fxFlex fxLayout="row" fxFlex="100" fxLayoutWrap fxLayoutGap="0.7%">
+              <mat-form-field class="example-full-width">
+                  <input matInput placeholder="Salutation" formControlName="salutationType">
+              </mat-form-field>
+              <mat-form-field class="example-full-width">
+                  <input matInput placeholder="First Name" formControlName="firstName">
+              </mat-form-field>
+              <mat-form-field class="example-full-width">
+                  <input matInput placeholder="Middle Name" formControlName="middleName">
+              </mat-form-field>
+              <mat-form-field class="example-full-width">
+                  <input matInput placeholder="Last Name" formControlName="lastName">
+              </mat-form-field>
+              <mat-form-field class="example-full-width">
+                  <input matInput placeholder="Suffix" formControlName="suffix">
+              </mat-form-field>
+          </div> <!--End of name group-->
+          <div formGroupName="program" fxFlex fxLayout="row" fxFlex="100"> <!--Start of Matoption-->
+            <mat-form-field>
+                <mat-select placeholder="Select Program">
+                  <mat-option *ngFor="let program of academicProgramList" [value]="program.id">
+                    {{program.name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>              
+          </div> <!--End of Mat option-->
+          <div formGroupName="mobileNo" fxFlex fxLayout="row" fxFlex="100" fxLayoutWrap fxLayoutGap="0.7%"> <!--Start of mobile no-->
+            <mat-form-field class="example-full-width">
+                <input matInput placeholder="Phone Type">
+            </mat-form-field>
+            <mat-form-field class="example-full-width">
+                <input matInput formControlName="countryCode" placeholder="Country Code" type="text" pattern="([0-9]\s*)+">
+            </mat-form-field>
+            <mat-form-field class="example-full-width">
+                <input matInput formControlName="areaCode" placeholder="Area Code">
+            </mat-form-field>
+            <mat-form-field class="example-full-width">
+                <input matInput formControlName="number" placeholder="Number">
+            </mat-form-field>
+            <mat-form-field class="example-full-width">
+                <input matInput formControlName="extention" placeholder="Extention">
+            </mat-form-field>
+          </div> <!--End of mobile no-->
+          <div> <!--Modal Start-->
+            <button class="degree-button" type="button" mat-raised-button color="basic" (click)="openDialog()">Add Degree</button>
+          </div> <!--Modal End-->
+          <div fxFlex fxLayout="row" fxFlex="100" fxLayoutGap="1%"> <!--About start-->
+            <mat-form-field>
+                <mat-select placeholder="How did you know about Southeast University?">
+                    <mat-option *ngFor="let about of aboutUniversity" [value]="about.value">
+                    {{about.value}}
+                    </mat-option>
+                </mat-select> 
+            </mat-form-field>
+            <mat-form-field>
+                <mat-select placeholder="Select Staff/Teacher">
+                  <mat-option *ngFor="let employee of employee" [value]="employee.id">
+                    {{employee.name.firstName}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>          
+              <mat-form-field class="example-full-width">
+                <input type="text" placeholder="Pick one" aria-label="Number" matInput [formControl]="myControl" [matAutocomplete]="auto">
+                <mat-autocomplete #auto="matAutocomplete">
+                  <mat-option *ngFor="let employee of employeeNameList" [value]="employee">
+                    {{employee}}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>                          
+          </div> <!--About end-->
+         <div>
+            <button class="save-button" type="submit" mat-raised-button color="primary">Save</button>
+          </div>
+        </form>
+      </mat-card>
+  </mat-tab>
+  <mat-tab label="View Admission Form Slip"> Content 2 </mat-tab>
+</mat-tab-group>

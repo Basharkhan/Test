@@ -1,0 +1,52 @@
+<div class="navbar-top" [ngClass]="fuseConfig.layout.navbar.secondaryBackground">
+
+    <div class="logo">
+        <!--<img class="logo-icon" src="assets/images/logos/fuse.svg">-->
+        <img class="logo-icon" src="assets/images/logos/seu.png">
+        <span class="logo-text secondary-text">SEU UMS</span>
+    </div>
+
+    <div class="buttons">
+
+        <button mat-icon-button class="toggle-sidebar-folded"
+                (click)="toggleSidebarFolded()" fxHide.lt-lg>
+            <mat-icon class="secondary-text">menu</mat-icon>
+        </button>
+
+        <button mat-icon-button class="toggle-sidebar-opened"
+                (click)="toggleSidebarOpened()" fxHide.gt-md>
+            <mat-icon class="secondary-text">arrow_back</mat-icon>
+        </button>
+
+    </div>
+
+</div>
+
+
+<div class="navbar-scroll-container" [ngClass]="fuseConfig.layout.navbar.primaryBackground"
+     fusePerfectScrollbar [fusePerfectScrollbarOptions]="{suppressScrollX: true}">
+
+    <div class="user" fxLayout="column" [ngClass]="fuseConfig.layout.navbar.secondaryBackground">
+
+        <div class="h3 username" *ngIf="localStorageItem('user') && localStorageItem('user')?.type == 'EMPLOYEE'">{{localStorageItem('employee').name.firstName}} {{localStorageItem('employee').name.middleName}} {{localStorageItem('employee').name.lastName}}</div>
+        <div class="h3 username" *ngIf="localStorageItem('user') && localStorageItem('user')?.type == 'STUDENT'">{{localStorageItem('student').name.firstName}} {{localStorageItem('student').name.middleName}} {{localStorageItem('student').name.lastName}}</div>
+
+        <div class="h5 email hint-text mt-8" *ngIf="localStorageItem('user') && localStorageItem('user')?.type == 'EMPLOYEE'">{{localStorageItem('employee').username}}</div>
+        <div class="h5 email hint-text mt-8" *ngIf="localStorageItem('user') && localStorageItem('user')?.type == 'STUDENT'">{{localStorageItem('student').username}}</div>
+
+        <div class="avatar-container" [ngClass]="fuseConfig.layout.navbar.primaryBackground">
+            <!--<img class="avatar" src="assets/images/avatars/Velazquez.jpg">-->
+            <img class="avatar" *ngIf="localStorageItem('user') && localStorageItem('user')?.type == 'EMPLOYEE' && localStorageItem('employee') != null && localStorageItem('employee')?.picture != null && localStorageItem('employee')?.picture?.length > 0" src="{{ fileServerBasePath }}/PROFILE_PICTURE/{{ localStorageItem('employee').picture }}">
+            <img class="avatar" *ngIf="localStorageItem('user') && localStorageItem('user')?.type == 'STUDENT' && localStorageItem('student') != null && localStorageItem('student')?.picture != null && localStorageItem('student')?.picture?.length > 0" src="{{ fileServerBasePath }}/PROFILE_PICTURE/{{ localStorageItem('student').picture }}">
+
+            <img class="avatar" *ngIf="localStorageItem('user') && localStorageItem('user')?.type == 'EMPLOYEE' && localStorageItem('employee') != null && (localStorageItem('employee')?.picture == null ||  localStorageItem('employee')?.picture == '')" src="assets/images/avatars/profile.jpg">
+            <img class="avatar" *ngIf="localStorageItem('user') && localStorageItem('user')?.type == 'STUDENT' && localStorageItem('student') != null && (localStorageItem('student')?.picture == null || localStorageItem('student')?.picture == '')" src="assets/images/avatars/profile.jpg">
+        </div>
+
+    </div>
+
+    <div class="navbar-content">
+        <fuse-navigation class="material2" layout="vertical"></fuse-navigation>
+    </div>
+
+</div>
